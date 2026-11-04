@@ -1,82 +1,79 @@
 
-# AI Bots and Schnapsen
+# NLP and Regression Research: Real Estate Price Prediction
 
-This project explores intelligent agents for the card game **Schnapsen**, using machine learning, heuristic strategies, and Minimax search.
-
-The repository contains a collection of hybrid-playing bots, training scripts, and experiments comparing different strategies against a baseline agent.
+This project explores real-estate listing price prediction using structured property features and natural language processing. It investigates whether incorporating listing descriptions improves regression performance.
 
 ## Project Overview
 
-The main approach combines machine-learning-based decision-making with search-based strategies.
+The target variable is `listPrice`. The experiments compare regression models trained on:
 
-The hybrid bot uses:
-- **Phase One:** Machine-learning-based move selection.
-- **Phase Two:** Minimax search for more strategic decision-making.
+- **Structured features:** Property characteristics such as square footage, number of bedrooms and bathrooms, stories, garage, year built, and property-type indicators.
+- **Text features:** Listing descriptions transformed into numerical representations using TF-IDF.
+- **Combined features:** Structured and text features joined using SciPy's sparse matrix functionality.
 
-Several variants extend this approach with additional heuristics and strategies.
+The data was divided into training, validation, and test sets (70% / 15% / 15%).
 
-## Bot Implementations
+## Models and Experiments
 
-| File | Description |
+The repository contains the following notebooks:
+
+| Notebook | Description |
 |---|---|
-| `HybridBot.py` | Main hybrid agent, combining ML-based play in Phase One with Minimax in Phase Two. |
-| `HybridBotProb.py` | Includes functionality for estimating an opponent's possible hand by sampling unknown cards while retaining known cards. |
-| `HybridBotTrump.py` | Introduces trump-card priorities into the playing strategy. |
-| `HybridBotEndgame.py` | Adds an endgame heuristic based on high-card values when five or fewer cards remain in Phase One. |
+| `RF_NOTEXT.ipynb` | Random Forest using structured features |
+| `RF_TEXT (1).ipynb` | Random Forest incorporating listing text |
+| `ridgeregression_notext.ipynb` | Ridge Regression using structured features |
+| `ridgeregression_text.ipynb` | Ridge Regression incorporating listing text |
+| `XGBoost.ipynb` | XGBoost regression experiments |
 
-## Model Training
+The experiments include hyperparameter tuning and comparisons between models with and without text features.
 
-`train_HybridBot.py` implements the model-training workflow.
+## Results
 
-The script:
-1. Collects game data by playing against BullyBot.
-2. Runs 200 games while alternating player order.
-3. Uses the collected data to train a model through `train_ML_model`.
-4. Uses Logistic Regression (`model_class="LR"`).
-5. Saves the trained model for use by the bot.
+The following test-set results were recorded in the notebooks:
 
-## Evaluation
+| Model | Features | R² | RMSE | MAE |
+|---|---|---:|---:|---:|
+| Random Forest | Structured | 0.5574 | 0.4304 | 0.2822 |
+| Random Forest | Structured + Text | 0.6151 | 0.4013 | 0.2474 |
+| Ridge Regression | Structured | 0.4507 | 0.4663 | 0.3050 |
+| Ridge Regression | Structured + Text | 0.6668 | 0.3734 | 0.2368 |
 
-`cli.py` provides commands for comparing the different bot implementations against BullyBot.
+These results suggest that incorporating listing descriptions improved performance in the recorded Random Forest and Ridge Regression experiments.
 
-The available experiment commands include:
-
-- `baseline-comparison`
-- `hybridbot-mod1`
-- `hybridbot-mod2`
-- `hybridbot-mod3`
-
-The comparisons run 100 games and alternate the starting player to reduce the effect of player order.
+*Note: These are results from separate notebook experiments, not a fully controlled benchmark. Metrics are reported on the target scale used in the notebooks.*
 
 ## Repository Structure
 
 ```text
-AI-Bots-and-Schnapsen/
-├── HybridBot.py
-├── HybridBotProb.py
-├── HybridBotTrump.py
-├── HybridBotEndgame.py
-├── train_HybridBot.py
-├── cli.py
-└── server.py
+NLP-Regression-Research/
+├── RF_NOTEXT.ipynb
+├── RF_TEXT (1).ipynb
+├── ridgeregression_notext.ipynb
+├── ridgeregression_text.ipynb
+├── XGBoost.ipynb
+├── cleaned_without.csv
+└── cleaned_with_text.csv
 ```
 
-## Technologies and Concepts
+## Technologies
 
 - Python
-- Schnapsen game framework
-- Machine Learning
-- Logistic Regression
-- Minimax Search
-- Heuristic Evaluation
-- Card Sampling and Opponent-Hand Estimation
-- Click CLI
+- pandas and NumPy
+- scikit-learn
+- SciPy
+- TF-IDF Vectorization
+- Random Forest Regression
+- Ridge Regression
+- XGBoost
+- Optuna
+- Matplotlib
+- joblib
 
 ## Running the Project
 
 1. Clone the repository.
-2. Set up the Schnapsen framework and its dependencies.
-3. Run the relevant training or evaluation scripts using the project's configured environment.
-4. Use the CLI commands to run bot comparisons.
+2. Install the required Python libraries used in the notebooks.
+3. Open the notebooks using Jupyter Notebook or JupyterLab.
+4. Run the experiments to explore preprocessing, feature engineering, model training, and evaluation.
 
-Refer to the individual scripts for implementation details and experiment configuration.
+The notebooks contain the individual experiment workflows and results.
